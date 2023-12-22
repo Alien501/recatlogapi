@@ -10,6 +10,7 @@ const connection = async () => {
         console.log('Connection Successful!');
     } catch (err) {
         console.log('Not connected!');
+        console.log(err);
     }
 }
 

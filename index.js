@@ -8,27 +8,23 @@ const port = 3000;
 connection();
 
 app.get('/', (req, res) => {
-  res.send({
+  return res.send({
     stat: 200,
     text: "I'm fine"
   });
 });
 
 app.get('/getdata', async (req, res) => {
-  console.log(req.query.length);
-    if(req.query.length == null || 0) res.send({
+    if(Object.keys(req.query).length == null || 0) return res.send({
         stat: 404,
         text: "No Query!"
     })
 
     const database = client.db('reccatlog');
     const collection = database.collection('catlog');
-
-    // res.send(req.query);
-
     const cursor = await collection.find(req.query).toArray();
 
-    res.send(cursor);
+    return res.send(cursor);
 });
 
 app.delete('/delete', async (req, res) => {
@@ -39,14 +35,15 @@ app.delete('/delete', async (req, res) => {
       const result = await collection.deleteOne(req.query)
 
       if (result.deletedCount === 1) {
-          res.json({ message: 'Document deleted successfully' });
+          return res.json({ message: 'Document deleted successfully' });
       } else {
-          res.status(404).json({ error: 'Document not found' });
+          return res.status(404).json({ error: 'Document not found' });
       }
   } catch (error) {
       console.error('Error deleting document:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      return res.status(500).json({ error: 'Internal Server Error' });
   }
+  return;
 });
 
 app.post('/add', async (req, res) => {
@@ -55,10 +52,10 @@ app.post('/add', async (req, res) => {
 
   try {
       const result = await collection.insertOne(req.query);
-      res.json({ message: 'Document added successfully'});
+      return res.json({ message: 'Document added successfully'});
   } catch (error) {
       console.error('Error adding document:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
